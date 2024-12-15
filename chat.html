@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чат Платформа</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #2c2c2c;
+            color: white;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.light-theme {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        #password-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #444;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        body.light-theme #password-section {
+            background-color: #ddd;
+            color: #333;
+        }
+
+        #password-section input {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 200px;
+        }
+
+        #password-section button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #password-section button:hover {
+            background-color: #0056b3;
+        }
+
+        #registration {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #444;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        body.light-theme #registration {
+            background-color: #ddd;
+            color: #333;
+        }
+
+        #registration input {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 200px;
+        }
+
+        #registration button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #registration button:hover {
+            background-color: #0056b3;
+        }
+
+        #avatar-upload {
+            margin-bottom: 10px;
+            padding: 5px;
+            font-size: 0.9em;
+        }
+
+        #chat-section {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 600px;
+            height: 80%;
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        body.light-theme #chat-section {
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        #chat-header {
+            background-color: #444;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            position: relative;
+        }
+
+        body.light-theme #chat-header {
+            background-color: #ddd;
+        }
+
+        #chat-header button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 5px 10px;
+            font-size: 0.9em;
+        }
+
+        #chat {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: #222;
+        }
+
+        body.light-theme #chat {
+            background-color: #fff;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 70%;
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            text-align: left;
+            flex-direction: column;
+        }
+
+        .message.self {
+            background-color: #4caf50;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message.other {
+            background-color: #007bff;
+            color: white;
+            text-align: left;
+        }
+
+        body.light-theme .message.self {
+            background-color: #90ee90;
+        }
+
+        body.light-theme .message.other {
+            background-color: #3399ff;
+        }
+
+        .message .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .message .username {
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .message .text {
+            font-size: 1em;
+        }
+
+        .file-preview img {
+            max-width: 100px;
+            max-height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        #chat-input {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #444;
+        }
+
+        body.light-theme #chat-input {
+            background-color: #ddd;
+        }
+
+        #message {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        #file-upload {
+            display: none;
+        }
+
+        .custom-file-upload {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #user-list {
+            padding: 10px;
+            background-color: #444;
+            border-bottom: 1px solid #555;
+        }
+
+        body.light-theme #user-list {
+            background-color: #ddd;
+            color: #333;
+        }
+
+        #user-list ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #user-list ul li {
+            padding: 5px;
+            color: white;
+        }
+
+        body.light-theme #user-list ul li {
+            color: #333;
+        }
+
+        .sticker-menu {
+            display: none;
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #444;
+            border-radius: 5px;
+            padding: 10px;
+            display: flex;
+            gap: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .sticker-menu img {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="password-section">
+        <h2>Введите пароль</h2>
+        <input type="password" id="password" placeholder="Введите пароль...">
+        <button onclick="verifyPassword()">Подтвердить</button>
+    </div>
+
+    <div id="registration">
+        <h2>Добро пожаловать в чат</h2>
+        <input type="text" id="username" placeholder="Введите ваше имя..." onkeydown="handleRegistrationKeyPress(event)">
+        <input type="file" id="avatar-upload" accept="image/*">
+        <button onclick="registerUser()">Войти</button>
+    </div>
+
+    <div id="chat-section">
+        <div id="chat-header">
+            Чат с друзьями
+            <button onclick="toggleTheme()">Сменить тему</button>
+        </div>
+        <div id="user-list">
+            <ul id="users">
+                <!-- Список пользователей -->
+            </ul>
+        </div>
+        <div id="chat"></div>
+        <div id="chat-input">
+            <input type="text" id="message" placeholder="Введите сообщение..." onkeydown="handleKeyPress(event)">
+            <label class="custom-file-upload">
+                Загрузить файл
+                <input type="file" id="file-upload" accept="image/*">
+            </label>
+            <button onclick="sendMessage()">Отправить</button>
+        </div>
+    </div>
+
+    <script>
+        const chat = document.getElementById('chat');
+        const registration = document.getElementById('registration');
+        const chatSection = document.getElementById('chat-section');
+        const passwordSection = document.getElementById('password-section');
+        const userList = document.getElementById('users');
+        const avatarUpload = document.getElementById('avatar-upload');
+        const messageInput = document.getElementById('message');
+        const correctPassword = "azer";
+        let currentUser = '';
+        let avatar = '';
+        const users = new Set();
+
+        function verifyPassword() {
+            const passwordInput = document.getElementById('password').value;
+            if (passwordInput === correctPassword) {
+                passwordSection.style.display = 'none';
+                registration.style.display = 'flex';
+            } else {
+                alert('Неверный пароль!');
+            }
+        }
+
+        function registerUser() {
+            const usernameInput = document.getElementById('username');
+            const username = usernameInput.value.trim();
+
+            if (!username) {
+                alert('Введите ваше имя!');
+                return;
+            }
+
+            if (avatarUpload.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    avatar = e.target.result;
+                    completeRegistration(username);
+                };
+                reader.readAsDataURL(avatarUpload.files[0]);
+            } else {
+                completeRegistration(username);
+            }
+        }
+
+        function completeRegistration(username) {
+            currentUser = username;
+            users.add(username);
+            updateUserList();
+
+            localStorage.setItem('username', username);
+            registration.style.display = 'none';
+            chatSection.style.display = 'flex';
+            messageInput.focus();
+
+            loadMessages();
+        }
+
+        function updateUserList() {
+            userList.innerHTML = '';
+            users.forEach(user => {
+                const userItem = document.createElement('li');
+                userItem.textContent = user;
+                userList.appendChild(userItem);
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const themeButton = document.querySelector('#chat-header button');
+            themeButton.textContent = document.body.classList.contains('light-theme') ? 'Светлая тема' : 'Тёмная тема';
+        }
+
+        function sendMessage() {
+            const messageText = messageInput.value.trim();
+            if (!messageText) return;
+
+            if (messageText.startsWith('/')) {
+                handleCommand(messageText);
+                messageInput.value = '';
+                return;
+            }
+
+            const message = {
+                text: messageText,
+                username: currentUser,
+                avatar: avatar || '',
+                timestamp: Date.now()
+            };
+
+            saveMessage(message);
+            displayMessage(message);
+
+            messageInput.value = '';
+        }
+
+        function handleCommand(command) {
+            if (command === '/delete') {
+                chat.innerHTML = '';
+                localStorage.removeItem('messages');
+            } else if (command.startsWith('/kick ')) {
+                const userToKick = command.split(' ')[1];
+                if (users.has(userToKick)) {
+                    users.delete(userToKick);
+                    updateUserList();
+                    alert(`${userToKick} был удален из чата.`);
+                    if (currentUser === userToKick) {
+                        logoutUser();
+                    }
+                } else {
+                    alert(`Пользователь ${userToKick} не найден.`);
+                }
+            } else {
+                alert('Неизвестная команда!');
+            }
+        }
+
+        function logoutUser() {
+            currentUser = '';
+            avatar = '';
+            registration.style.display = 'flex';
+            chatSection.style.display = 'none';
+        }
+
+        function saveMessage(message) {
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            messages.push(message);
+            localStorage.setItem('messages', JSON.stringify(messages));
+        }
+
+        function loadMessages() {
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            messages.forEach(displayMessage);
+        }
+
+        function displayMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', message.username === currentUser ? 'self' : 'other');
+
+            const headerElement = document.createElement('div');
+            headerElement.classList.add('header');
+
+            if (message.avatar) {
+                const img = document.createElement('img');
+                img.src = message.avatar;
+                img.classList.add('avatar');
+                headerElement.appendChild(img);
+            }
+
+            const usernameElement = document.createElement('div');
+            usernameElement.textContent = message.username;
+            usernameElement.classList.add('username');
+            headerElement.appendChild(usernameElement);
+
+            messageElement.appendChild(headerElement);
+
+            const textElement = document.createElement('div');
+            textElement.classList.add('text');
+            textElement.textContent = message.text;
+
+            messageElement.appendChild(textElement);
+            chat.appendChild(messageElement);
+
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+                event.preventDefault();
+            }
+        }
+
+        function handleRegistrationKeyPress(event) {
+            if (event.key === 'Enter') {
+                registerUser();
+                event.preventDefault();
+            }
+        }
+        
+    </script>
+</body>
+</html>
